@@ -31,7 +31,7 @@ PiCraft allows you to supply your own server.jar or download one automatically. 
 
 We plan to add others in the future but if you don't want to wait use the advanced panel and supply the server.jar there!
 
-# Support
+# PiCraft Support
 We have a [Discord server](https://discord.gg/HhtjQU3GZr), but know that this support server is not for support related to minecraft, only for support with PiCraft.
 
 # Credits
