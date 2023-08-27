@@ -14,9 +14,11 @@ We know that there is also the [Pinecraft](https://github.com/Cat5TV/pinecraft) 
 
 ## Cons
 * Work in progress
+* Small popularity
+* May be buggy
 
 # Server Support
-PiCraft allows you to supply your own server.jar or download one automatically. PiCraft can automatically download
+PiCraft allows you to supply your own server.jar or download one automatically. PiCraft can automatically download most popular minecraft servers. You can see our download support below.
 
 ## Bukkit Forks
 * Spigot
@@ -30,7 +32,7 @@ PiCraft allows you to supply your own server.jar or download one automatically. 
 We plan to add others in the future but if you don't want to wait use the advanced panel and supply the server.jar there!
 
 # Support
-
+We have a [Discord server](https://discord.gg/HhtjQU3GZr), but know that this support server is not for support related to minecraft, only for support with PiCraft.
 
 # Credits
 * Deezed420 (For most of the programming and running the program)
