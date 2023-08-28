@@ -1,10 +1,10 @@
-import core.services, time
+from msvcrt import getch
+import sys
 
-p=core.services.progress()
-
-try:
-    for i in range(100):
-        time.sleep(.1)
-        if i != 50: p.draw(i)
-        else: p.halt() ; input('deez?\n> ')
-except KeyboardInterrupt: print('\x1b[2J ')
+while True:
+    key = getch()
+    if key == b'\x03':
+        print('CTRL C detected. Press again to terminate.')
+        key = getch()
+        if key == b'\x03': sys.exit()
+    print(key)
