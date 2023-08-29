@@ -37,22 +37,24 @@ class Menu:
 
     def __getkey(self):
         firstChar = self.__getch()
-        if sys.platform == 'linux':
-            if firstChar == '\x1b':
-                return {'[A': 'up', '[B': 'down', '[C': 'right', '[D': 'left'}[self.__getch() + self.__getch()]
-            elif firstChar == chr(3):
-                raise KeyboardInterrupt
+        try:
+            if sys.platform == 'linux':
+                if firstChar == '\x1b':
+                    return {'[A': 'up', '[B': 'down', '[C': 'right', '[D': 'left'}[self.__getch() + self.__getch()]
+                elif firstChar == chr(3):
+                    raise KeyboardInterrupt
+                else:
+                    return firstChar
             else:
-                return firstChar
-        else:
-            if firstChar == b'\xe0':
-                return {'H': 'up', 'P': 'down', 'M': 'right', 'K': 'left'}[self.__getch().decode()]
-            elif firstChar == b'\x03':
-                raise KeyboardInterrupt
-            elif firstChar == b'\r':
-                return 'select'
-            else:
-                return firstChar
+                if firstChar == b'\xe0':
+                    return {'H': 'up', 'P': 'down', 'M': 'right', 'K': 'left'}[self.__getch().decode()]
+                elif firstChar == b'\x03':
+                    raise KeyboardInterrupt
+                elif firstChar == b'\r':
+                    return 'select'
+                else:
+                    return firstChar
+        except KeyError: pass
             
     def __display_menu(self):
         sys.stdout.write('\033[H')
