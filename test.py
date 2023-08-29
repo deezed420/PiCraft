@@ -1,10 +1,4 @@
-from msvcrt import getch
-import sys
+import msvcrt
 
-while True:
-    key = getch()
-    if key == b'\x03':
-        print('CTRL C detected. Press again to terminate.')
-        key = getch()
-        if key == b'\x03': sys.exit()
-    print(key)
+while 1:
+    print(msvcrt.getch())
