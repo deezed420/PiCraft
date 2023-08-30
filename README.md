@@ -35,4 +35,4 @@ We plan to add others in the future but if you don't want to wait use the advanc
 We have a [Discord server](https://discord.gg/HhtjQU3GZr), but know that this support server is not for support related to minecraft, only for support with PiCraft.
 
 # Credits
-* Deezed420 (For most of the programming and running the program)
+* Deezed420 (For creating the entire program and the Chai package)

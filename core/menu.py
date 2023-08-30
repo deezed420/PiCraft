@@ -43,6 +43,8 @@ class Menu:
                     return {'[A': 'up', '[B': 'down', '[C': 'right', '[D': 'left'}[self.__getch() + self.__getch()]
                 elif firstChar == chr(3):
                     raise KeyboardInterrupt
+                elif firstChar in [chr(10), chr(13)]:
+                    return 'select'
                 else:
                     return firstChar
             else:
