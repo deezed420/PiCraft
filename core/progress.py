@@ -86,7 +86,7 @@ class ProgressBar:
         print(f'\x1b[{self.lines - 1};0f{self.title} {percentage}% {progress_bar}\x1b[K', end='')
 
 if __name__ == '__main__':
-    pb = ProgressBar('Download')
+    pb = ProgressBar()
     
     for i in range(101):
         if i == 50:

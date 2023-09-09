@@ -6,8 +6,7 @@ class Menu:
         self.options = options
         self.selected_index = 0
     
-    def display(self, selector: str = '>', exit: bool = False):
-        if exit: self.options.append('Exit')
+    def display(self, selector: str = '>'):
         self.selector = selector
 
         print('\x1b[2J')
@@ -70,5 +69,4 @@ class Menu:
             else:
                 print(f"  {option}")
 
-if __name__ == '__main__':
-    menu = print(Menu('Main Menu', ['Option 1', 'Option 2', 'Option 3']).display())
+if __name__ == '__main__': menu = print(Menu('Main Menu', ['Option 1', 'Option 2', 'Option 3']).display())

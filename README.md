@@ -27,7 +27,6 @@ PiCraft allows you to supply your own server.jar or download one automatically. 
 
 ## Modded Servers
 * Fabric
-* Forge
 
 We plan to add others in the future but if you don't want to wait use the advanced panel and supply the server.jar there!
 
@@ -35,4 +34,5 @@ We plan to add others in the future but if you don't want to wait use the advanc
 We have a [Discord server](https://discord.gg/HhtjQU3GZr), but know that this support server is not for support related to minecraft, only for support with PiCraft.
 
 # Credits
-* Deezed420 (For creating the entire program and the Chai package)
+* Chai package (The menu and progress bar was from chai)
+* Deezed420 (For creating the entire program and chai)
