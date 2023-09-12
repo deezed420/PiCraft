@@ -1,29 +1,27 @@
-import core.service, tarfile, shutil, os
+import core.service
+import subprocess
+import requests
+import tarfile
+import pathlib
+import shutil
+import json
+import time
+import os
+
 class App:
     def __init__(self):
-        menu = {
-            'main': core.service.Menu(
+        self.menu = {
+            'Main': core.service.Menu(
                 self.piCraftText() + '\nMain menu',
-                ['Install', 'Delete', 'Advanced']
+                ['Servers', 'Settings', 'Destroy']
             ),
-            'install': {
-                'main': core.service.Menu(
-                    self.piCraftText() + '\nChoose server to install',
-                    ['Vanilla', 'Paper', 'Purpur', 'Fabric']
-                ), 'Paper': core.service.Menu(
-                    self.piCraftText()+'\nChoose version for server',
-                    ['1.20.1', '1.19.4', '1.16.5', '1.12.2','1.8.9']
-                ), 'Purpur': core.service.Menu(
-                    self.piCraftText()+'\nChoose version for server',
-                    ['1.20.1', '1.19.4', '1.18.2', '1.17.1', '1.16.5']
-                ), 'Fabric': core.service.Menu(
-                    self.piCraftText()+'\nChoose version for server',
-                    ['1.20.1', '1.19.4', '1.18.2', '1.16.5','1.14.4']
-                )
-            },
-            'advanced': core.service.Menu(
-                self.piCraftText() + '\nAdvanced user panel',
-                ['Add server jar', 'Ram Optimization (BETA)']
+            'Servers': core.service.Menu(
+                self.piCraftText() + '\nServers',
+                list(self.getServers().keys())
+            ),
+            'Confirm': core.service.Menu(
+                self.piCraftText() + '\nAre you sure?',
+                ['I am sure', 'Nevermind']
             )
         }
 
@@ -52,26 +50,33 @@ class App:
             }
         }
 
-        try: os.makedirs('server')
-        except OSError:
-            shutil.rmtree('server')
-            os.makedirs('server')
+        loop = True
+        while loop:
+            current = self.menu['Main'].display()
+            if current == 'Servers':
+                current = self.menu['Servers'].display()
+                if current in self.getServers():
+                    while True:
+                        server = current
+                        current = core.service.Menu(
+                            self.piCraftText() + '\n' + current,
+                            ['Start server', 'Delete']
+                        ).display()
 
-        current = menu['main'].display()
-        if current == 'Install':
-            current = menu['install']['main'].display()
-            if current == 'Vanilla':
-                bar = core.service.ProgressBar('Downloading')
-                bar.print('Downloading Java')
-                core.service.download(links['Java'], 'java.tar.gz', bar, 50)
-                bar.print('Unpacking Java')
-                bar.title = 'Unpacking'
-                self.unpackJava()
-                bar.print('Downloading Server.Jar')
-                bar.title = 'Downloading'
-                core.service.download(links['Vanilla']['Latest'], 'server/server.jar', bar, 50)
-                bar.title = 'Finshing'
-    
+                        if current == 'Start server':
+                            subprocess.run('start.bat', shell=True)
+                            exit()
+                        elif current == 'Delete':
+                            current = self.menu['Confirm'].display()
+                            if current == 'I am sure':
+                                shutil.rmtree(server)
+                                exit()
+
+
+    def getServers(self):
+        with open('store.json', 'r') as f:
+            return json.load(f)['servers']
+
     def unpackJava(self):
         with tarfile.open('java.tar.gz', 'r:gz') as f:
             for member in f.getmembers():
@@ -82,6 +87,14 @@ class App:
                     os.remove('java.tar.gz')
                     shutil.move(member.name, 'server/java')
                     shutil.rmtree(member.name.split('/')[0])
+    
+    def download(url: str, fileName: str, progressBar: core.service.ProgressBar, divider: int):
+        with open(str(pathlib.Path(__file__).parent.resolve().parent.resolve())+'/'+fileName, 'ab+') as f:
+            download, i = requests.get(url, stream=True), progressBar.percentage
+            for chunk in download.iter_content(round(int(download.headers['Content-Length'])/divider)):
+                f.write(chunk)
+                progressBar.draw(i)
+                i += 1
                 
     def piCraftText(self): return '''
         \x1b[31m██████╗ ██╗\x1b[38;5;208m ██████╗██████╗  █████╗ ███████╗████████╗\x1b[39m
