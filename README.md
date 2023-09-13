@@ -1,9 +1,9 @@
-# PiCraft
+# PineCraft X
 An easy to use installer to setup a minecraft server on the Raspberry Pi
 
 # What is it?
-PiCraft allows you to easily setup and install a minecraft server on the Raspberry Pi.
-We know that there is also the [Pinecraft](https://github.com/Cat5TV/pinecraft) project that has also been made for the same purpose, but there are some differences between Pinecraft and PiCraft.
+PineCraft X allows you to easily setup and install a minecraft server on the Raspberry Pi. It allows a lot of customizability and allows as many servers as the Pi can handle!
+The project we based ours off of is [Pinecraft](https://github.com/Cat5TV/pinecraft). We noticed it doesn't have that much functionality, so we made it better.
 
 # Differences between [Pinecraft](https://github.com/Cat5TV/pinecraft)
 ## Pros
@@ -17,8 +17,8 @@ We know that there is also the [Pinecraft](https://github.com/Cat5TV/pinecraft) 
 * Small popularity
 * May be buggy
 
-# Server Support
-PiCraft allows you to supply your own server.jar or download one automatically. PiCraft can automatically download most popular minecraft servers. You can see our download support below.
+# Server Download
+PineCraft X can automatically download most popular minecraft servers or you can give a custom server jar. Below are the server jars that we can automatically download for you
 
 ## Bukkit Forks
 * Spigot
@@ -28,11 +28,11 @@ PiCraft allows you to supply your own server.jar or download one automatically. 
 ## Modded Servers
 * Fabric
 
-We plan to add others in the future but if you don't want to wait use the advanced panel and supply the server.jar there!
+We plan to add more support in the future, but if you can't wait then you can supply a server jar.
 
-# PiCraft Support
-We have a [Discord server](https://discord.gg/HhtjQU3GZr), but know that this support server is not for support related to minecraft, only for support with PiCraft.
+# PineCraft X Support
+We have a [Discord server](https://discord.gg/HhtjQU3GZr), but know that this support server is not for support related to minecraft, only for support with PineCraft X.
 
 # Credits
-* Chai package (The menu and progress bar was from chai)
-* Deezed420 (For creating the entire program and chai)
+* Deezed420 (For creating the entire program)
+* Pollev (For the [progress bar](https://github.com/pollev/python_progress_bar) that we use)
