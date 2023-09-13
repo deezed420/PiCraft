@@ -2,7 +2,7 @@
 An easy to use installer to setup a minecraft server on the Raspberry Pi
 
 # What is it?
-PineCraft X is a project I made because when I was young and I wanted to create a minecraft server for me and my friends to play on, I saw on a youtube video about [Pinecraft](https://github.com/Cat5TV/pinecraft) and that a Raspberry Pi was the best way to make a server for free.<br>But, when I bought it I found out that [Pinecraft](https://github.com/Cat5TV/pinecraft) was bad at creating servers with customizability and I kind of dropped it.<br>Now that im older and I know how to code, I decided that anyone should be able to create a minecraft server no matter their skill, and thats why I created [PineCraft X](https://github.com/deezed420)
+### PineCraft X is a project I made because when I was young and I wanted to create a minecraft server for me and my friends to play on, I saw on a youtube video about [Pinecraft](https://github.com/Cat5TV/pinecraft) and that a Raspberry Pi was the best way to make a server for free. But, when I bought it I found out that [Pinecraft](https://github.com/Cat5TV/pinecraft) was bad at creating servers with customizability and I dropped it. Now that im older and I know how to code, I decided that anyone should be able to create a minecraft server no matter their skill, and thats why I created [PineCraft X](https://github.com/deezed420)
 
 # Differences between [Pinecraft](https://github.com/Cat5TV/pinecraft)
 ## Pros
