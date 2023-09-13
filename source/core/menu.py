@@ -6,7 +6,7 @@ class Menu:
         self.options = options
         self.selected_index = 0
     
-    def display(self, selector: str = '>', ignoreBackSignal: bool = True):
+    def display(self, selector: str = '>', backSignal: bool = True):
         self.selector = selector
 
         print('\x1b[2J')
@@ -18,7 +18,7 @@ class Menu:
             if key == 'up' and self.selected_index > 0: self.selected_index -= 1
             elif key == 'down' and self.selected_index < len(self.options) - 1: self.selected_index += 1
             elif key == 'select': return self.options[self.selected_index]
-            if ignoreBackSignal:
+            if backSignal:
                 if key == 'left':
                     return 'back'
 

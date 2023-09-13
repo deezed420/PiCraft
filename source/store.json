@@ -1,3 +1,9 @@
 {
-    "servers": {}
+    "servers": {
+        "Nutz": {
+            "Jar Type": "E",
+            "Version": "E",
+            "Location": "E"
+        }
+    }
 }

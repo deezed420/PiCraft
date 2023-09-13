@@ -1,7 +1,10 @@
 from progress import ProgressBar
+from json import load, dump
+from os import system, name
 from requests import get
 from menu import Menu
-import json
+
+def clear(): system('cls' if name == 'nt' else 'clear')
 
 class ConfigFile:
     def __init__(self, file: str):
@@ -9,7 +12,7 @@ class ConfigFile:
 
     def addServer(self, name: str, jarType: str, version: str, folder: str):
         with open(self.filename, 'r') as file:
-            contents = json.load(file)
+            contents = load(file)
 
         contents['servers'][name] = {
             'Jar Type': jarType,
@@ -18,21 +21,21 @@ class ConfigFile:
         }
 
         with open(self.filename, 'w') as file:
-            json.dump(contents, file, indent=4)
+            dump(contents, file, indent=4)
 
         return contents
     
     def delServer(self, name: str):
         with open(self.filename, 'r') as file:
-            contents = json.load(file)
+            contents = load(file)
 
         del contents['servers'][name]
 
         with open(self.filename, 'w') as file:
-            json.dump(contents, file, indent=4)
+            dump(contents, file, indent=4)
 
         return contents
     
     def getServers(self):
         with open(self.filename, 'r') as file:
-            return json.load(file)['servers']
+            return load(file)['servers']
