@@ -4,16 +4,20 @@ import requests
 import tarfile
 import pathlib
 import shutil
-import json
-import time
+import re
 import os
 
 class App:
     def __init__(self):
-        links = {
+        self.errcode = ''
+        self.links = {
             'Java': 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.8.1%2B1/OpenJDK17U-jre_aarch64_linux_hotspot_17.0.8.1_1.tar.gz',
-            'Vanilla':   {
-                'Latest': 'https://piston-data.mojang.com/v1/objects/84194a2f286ef7c14ed7ce0090dba59902951553/server.jar'
+            'Spigot': {
+                '1.20.1': 'https://download.getbukkit.org/spigot/spigot-1.20.1.jar',
+                '1.19.4': 'https://download.getbukkit.org/spigot/spigot-1.19.4.jar',
+                '1.16.5': 'https://cdn.getbukkit.org/spigot/spigot-1.16.5.jar',
+                '1.12.2': 'https://cdn.getbukkit.org/spigot/spigot-1.12.2.jar',
+                '1.8.8': 'https://cdn.getbukkit.org/spigot/spigot-1.8.8-R0.1-SNAPSHOT-latest.jar'
             }, 'Paper':  {
                 '1.20.1': 'https://api.papermc.io/v2/projects/paper/versions/1.20.1/builds/169/downloads/paper-1.20.1-169.jar',
                 '1.19.4': 'https://api.papermc.io/v2/projects/paper/versions/1.19.4/builds/550/downloads/paper-1.19.4-550.jar',
@@ -35,7 +39,7 @@ class App:
             }
         }
         
-        while True:  # Add an infinite loop to keep running the menu
+        while True:
             config = core.service.ConfigFile('store.json')
             servers = config.getServers()
             
@@ -48,6 +52,24 @@ class App:
                     self.PineCraftXText() + '\nServers',
                     ['Create new']+list(servers.keys())
                 ),
+                'Install': {
+                    'Select': core.service.Menu(
+                        self.PineCraftXText() + '\nSelect jar type',
+                        ['Spigot', 'Paper', 'Purpur', 'Fabric']
+                    ), 'Spigot': core.service.Menu(
+                        self.PineCraftXText() + '\nSelect version of server',
+                        ['1.20.1', '1.19.4', '1.16.5', '1.12.2', '1.8.8']
+                    ), 'Paper': core.service.Menu(
+                        self.PineCraftXText() + '\nSelect version of server',
+                        ['1.20.1', '1.19.4', '1.16.5', '1.12.2', '1.8.8']
+                    ), 'Purpur': core.service.Menu(
+                        self.PineCraftXText() + '\nSelect version of server',
+                        ['1.20.1', '1.19.4', '1.18.2', '1.17.1', '1.16.5']
+                    ), 'Fabric': core.service.Menu(
+                        self.PineCraftXText() + '\nSelect version of server',
+                        ['1.20.1', '1.19.4', '1.18.2', '1.16.5', '1.14.4']
+                    )
+                },
                 'Confirm': core.service.Menu(
                     self.PineCraftXText() + '\nAre you sure?',
                     ['I am sure', 'Nevermind']
@@ -77,29 +99,53 @@ class App:
                                 shutil.rmtree(server)
                                 break
                     else:
-                        errcode = ''
                         while True:
                             core.service.clear()
                             print(self.PineCraftXText())
-                            print(errcode, end='')
+                            print(self.errcode)
                             name = input('\nEnter name of server:\n> ')
                             if name == '':
-                                errcode = '\nName cannot be empty. Please enter valid name.'
-                            else: print(name) ; exit()
+                                self.errcode = 'Name cannot be empty. Please enter valid name.'
+                            else:
+                                if not re.match(r'^[^<>:"//|?*]*$', name):
+                                    self.errcode = 'Invalid characters in name. Please enter valid name.'
+                                else:
+                                    jar = self.menu['Install']['Select'].display()
+                                    v = self.menu['Install'][jar].display()
 
-    def unpackJava(self):
-        with tarfile.open('java.tar.gz', 'r:gz') as f:
+                                    p = core.service.ProgressBar('Downloading')
+
+                                    os.mkdir(name)
+
+                                    p.print('Downloading Java')
+                                    self.download(self.links['Java'], name+'\java.tar.gz', p, 50)
+                                    p.print('Unpacking Java')
+                                    self.unpackJava(name+'/java.tar.gz')
+                                    p.print('Downloading '+jar+' '+v)
+                                    self.download(self.links[jar][v], name+'\server.jar', p, 50)
+                                    p.title = 'Finishing'
+                                    p.print('Agreeing to EULA')
+                                    with open(name+'\eula.txt', 'w') as f: f.write('eula=true')
+                                    config.addServer(name, jar, v)
+                                    core.service.clear()
+                                    print('Successfully installed',jar,v,'!')
+                                    exit()
+
+
+    def unpackJava(self, fileName):
+        with tarfile.open(fileName, 'r:gz') as f:
             for member in f.getmembers():
                 if member.name == 'jdk-17.0.8.1+1-jre/bin/java':
                     f.extract(member)
                     f.close()
                     
-                    os.remove('java.tar.gz')
-                    shutil.move(member.name, 'server/java')
+                    os.remove(fileName)
+                    shutil.move(member.name, os.path.dirname(fileName)+'/java')
                     shutil.rmtree(member.name.split('/')[0])
     
-    def download(url: str, fileName: str, progressBar: core.service.ProgressBar, divider: int):
-        with open(str(pathlib.Path(__file__).parent.resolve().parent.resolve())+'/'+fileName, 'ab+') as f:
+    def download(self, url: str, fileName: str, progressBar: core.service.ProgressBar, divider: int):
+        os.makedirs(os.path.dirname(fileName), exist_ok=True)
+        with open(fileName, 'ab+') as f:
             download, i = requests.get(url, stream=True), progressBar.percentage
             for chunk in download.iter_content(round(int(download.headers['Content-Length'])/divider)):
                 f.write(chunk)

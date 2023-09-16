@@ -10,14 +10,13 @@ class ConfigFile:
     def __init__(self, file: str):
         self.filename = file
 
-    def addServer(self, name: str, jarType: str, version: str, folder: str):
+    def addServer(self, name: str, jarType: str, version: str):
         with open(self.filename, 'r') as file:
             contents = load(file)
 
         contents['servers'][name] = {
             'Jar Type': jarType,
-            'Version': version,
-            'Location': folder
+            'Version': version
         }
 
         with open(self.filename, 'w') as file:
