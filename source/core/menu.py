@@ -1,4 +1,4 @@
-import sys
+import sys, os
 
 class Menu:
     def __init__(self, title: str, options: list) -> str:
@@ -6,21 +6,23 @@ class Menu:
         self.options = options
         self.selected_index = 0
     
-    def display(self, selector: str = '>', backSignal: bool = True):
+    def display(self, selector: str = '>', backSignal: bool = True, helpBar: bool = True):
         self.selector = selector
+        
+        _,rows = os.get_terminal_size()
 
         print('\x1b[2J')
+        if backSignal: print(f'\x1b[{rows};0f Left - Back, Up and down - Move up and down, Enter - Select\r')
+        else: print(f'\x1b[{rows};0f Left - Back, Up and down - Move up and down, Enter - Select \r')
 
         while True:
             self.__display_menu()
             key = self.__getkey()
 
             if key == 'up' and self.selected_index > 0: self.selected_index -= 1
-            elif key == 'down' and self.selected_index < len(self.options) - 1: self.selected_index += 1
-            elif key == 'select': return self.options[self.selected_index]
-            if backSignal:
-                if key == 'left':
-                    return 'back'
+            if key == 'down' and self.selected_index < len(self.options) - 1: self.selected_index += 1
+            if key == 'select': return self.options[self.selected_index]
+            if backSignal and key == 'left': return 'Back'
 
     def __getch(self):
         if sys.platform == 'linux':

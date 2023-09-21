@@ -67,7 +67,7 @@ class ProgressBar:
         self.is_destroyed = True
 
     def __print_text_lines(self, lines):
-        for i, line in enumerate(lines, start=1):
+        for i, line in enumerate(lines, 1):
             print(f'\x1b[{i};0f{line}\x1b[K')
             if i >= self.lines - 2:
                 break
@@ -88,13 +88,4 @@ class ProgressBar:
 if __name__ == '__main__':
     pb = ProgressBar()
     
-    for i in range(101):
-        if i == 50:
-            pb.halt()
-            input('Enter something: ')
-        pb.draw(i)
-        pb.print(str(i)+'abcdedsdfsdfsdfsdf')
-        time.sleep(0.1)
-    
-    pb.destroy()
-    
+    pb.__print_progress_bar(1)

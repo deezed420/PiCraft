@@ -1,8 +1,8 @@
-from progress import ProgressBar
+from .progress import ProgressBar
 from json import load, dump
 from os import system, name
 from requests import get
-from menu import Menu
+from .menu import Menu
 
 def clear(): system('cls' if name == 'nt' else 'clear')
 

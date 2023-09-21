@@ -92,14 +92,14 @@ class App:
                         if current == 'Start server':
                             subprocess.run('cd '+server, shell=True)
                             subprocess.run('run.sh', shell=True)
-                            exit()
+                            core.service.clear() ; exit()
                         elif current == 'Delete':
                             current = self.menu['Confirm'].display()
                             if current == 'I am sure':
                                 config.delServer(server)
                                 shutil.rmtree(server)
                                 break
-                    else:
+                    elif current == 'Create new':
                         while True:
                             core.service.clear()
                             print(self.PineCraftXText())
@@ -137,7 +137,9 @@ class App:
                                     )
                                     core.service.clear()
                                     break
-
+                    elif current == 'Back': break
+                elif current == 'Back': core.service.clear() ; exit()
+            
     def unpackJava(self, fileName):
         with tarfile.open(fileName, 'r:gz') as f:
             for member in f.getmembers():
@@ -158,9 +160,9 @@ class App:
                 progressBar.draw(i)
                 i += 1
                 
-    def generateRunScript(minRam: str, maxRam: str):
-        minRam = str(round(min(minRam / (1024 ** 3), 6)))
-        maxRam = str(round(min(maxRam / (1024 ** 3), 6)))
+    def generateRunScript(self, minRam: str, maxRam: str):
+        minRam = str(int(min(minRam / (1024 ** 3), 6)))
+        maxRam = str(int(min(maxRam / (1024 ** 3), 6)))
         with open(os.path.abspath('run.sh')) as f:
             script = []
             for arg in f.read().split(' '):
