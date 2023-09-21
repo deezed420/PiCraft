@@ -10,7 +10,7 @@ class ConfigFile:
     def __init__(self, file: str):
         self.filename = file
 
-    def addServer(self, name: str, jarType: str, version: str):
+    def addServer(self, name: str, jarType: str, version: str) -> None:
         with open(self.filename, 'r') as file:
             contents = load(file)
 
@@ -24,7 +24,7 @@ class ConfigFile:
 
         return contents
     
-    def delServer(self, name: str):
+    def delServer(self, name: str) -> None:
         with open(self.filename, 'r') as file:
             contents = load(file)
 
@@ -35,6 +35,6 @@ class ConfigFile:
 
         return contents
     
-    def getServers(self):
+    def getServers(self) -> dict:
         with open(self.filename, 'r') as file:
             return load(file)['servers']

@@ -2,14 +2,14 @@ import core.service
 import subprocess
 import requests
 import tarfile
-import pathlib
 import shutil
+import psutil
 import re
 import os
 
 class App:
     def __init__(self):
-        self.errcode = ''
+        self.statcode = ''
         self.links = {
             'Java': 'https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.8.1%2B1/OpenJDK17U-jre_aarch64_linux_hotspot_17.0.8.1_1.tar.gz',
             'Spigot': {
@@ -31,11 +31,11 @@ class App:
                 '1.17.1': 'https://api.purpurmc.org/v2/purpur/1.17.1/1428/download',
                 '1.16.5': 'https://api.purpurmc.org/v2/purpur/1.16.5/1171/download'
             }, 'Fabric': {
-                '1.20.1': 'https://meta.fabricmc.net/v2/versions/loader/1.20.1/0.14.22/0.11.2/server/jar',
-                '1.19.4': 'https://meta.fabricmc.net/v2/versions/loader/1.19.4/0.14.22/0.11.2/server/jar',
-                '1.18.2': 'https://meta.fabricmc.net/v2/versions/loader/1.18.2/0.14.22/0.11.2/server/jar',
-                '1.16.5': 'https://meta.fabricmc.net/v2/versions/loader/1.16.5/0.14.22/0.11.2/server/jar',
-                '1.14.4': 'https://meta.fabricmc.net/v2/versions/loader/1.14.4/0.14.22/0.11.2/server/jar'            
+                '1.20.1': 'http://5.161.186.224:1508/cdn/fabric-server-mc.1.20.1-loader.0.14.22-launcher.0.11.2.jar',
+                '1.19.4': 'http://5.161.186.224:1508/cdn/fabric-server-mc.1.19.4-loader.0.14.22-launcher.0.11.2.jar',
+                '1.18.2': 'http://5.161.186.224:1508/cdn/fabric-server-mc.1.18.2-loader.0.14.22-launcher.0.11.2.jar',
+                '1.16.5': 'http://5.161.186.224:1508/cdn/fabric-server-mc.1.16.5-loader.0.14.22-launcher.0.11.2.jar',
+                '1.14.4': 'http://5.161.186.224:1508/cdn/fabric-server-mc.1.20.1-loader.0.14.22-launcher.0.11.2.jar'            
             }
         }
         
@@ -90,7 +90,8 @@ class App:
                         ).display()
 
                         if current == 'Start server':
-                            subprocess.run('./'+server+'/run.sh', shell=True)
+                            subprocess.run('cd '+server, shell=True)
+                            subprocess.run('run.sh', shell=True)
                             exit()
                         elif current == 'Delete':
                             current = self.menu['Confirm'].display()
@@ -102,17 +103,16 @@ class App:
                         while True:
                             core.service.clear()
                             print(self.PineCraftXText())
-                            print(self.errcode)
+                            print(self.statcode)
                             name = input('\nEnter name of server:\n> ')
                             if name == '':
-                                self.errcode = 'Name cannot be empty. Please enter valid name.'
+                                self.statcode = 'Name cannot be empty. Please enter valid name.'
                             else:
                                 if not re.match(r'^[^<>:"//|?*]*$', name):
-                                    self.errcode = 'Invalid characters in name. Please enter valid name.'
+                                    self.statcode = 'Invalid characters in name. Please enter valid name.'
                                 else:
                                     jar = self.menu['Install']['Select'].display()
                                     v = self.menu['Install'][jar].display()
-
                                     p = core.service.ProgressBar('Downloading')
 
                                     os.mkdir(name)
@@ -124,13 +124,19 @@ class App:
                                     p.print('Downloading '+jar+' '+v)
                                     self.download(self.links[jar][v], name+'\server.jar', p, 50)
                                     p.title = 'Finishing'
-                                    p.print('Agreeing to EULA')
-                                    with open(name+'\eula.txt', 'w') as f: f.write('eula=true')
+                                    p.print('Creating run script and agreeing to EULA')
+                                    ram = []
+                                    for _ in range(100): ram.append(round(psutil.virtual_memory().available))
+                                    with open(os.path.abspath(name+'\\run.sh'), 'w') as f: f.write(self.generateRunScript(min(ram), sum(ram)/len(ram)))
+                                    with open(os.path.abspath(name+'\\eula.txt'), 'w') as f: f.write('eula=true')
                                     config.addServer(name, jar, v)
+                                    servers = config.getServers()
+                                    self.menu['Servers'] = core.service.Menu(
+                                        self.PineCraftXText() + '\nServers',
+                                        ['Create new'] + list(servers.keys())
+                                    )
                                     core.service.clear()
-                                    print('Successfully installed',jar,v,'!')
-                                    exit()
-
+                                    break
 
     def unpackJava(self, fileName):
         with tarfile.open(fileName, 'r:gz') as f:
@@ -152,19 +158,22 @@ class App:
                 progressBar.draw(i)
                 i += 1
                 
+    def generateRunScript(minRam: str, maxRam: str):
+        minRam = str(round(min(minRam / (1024 ** 3), 6)))
+        maxRam = str(round(min(maxRam / (1024 ** 3), 6)))
+        with open(os.path.abspath('run.sh')) as f:
+            script = []
+            for arg in f.read().split(' '):
+                if arg == '-Xms': arg = '-Xms'+minRam+'G'
+                if arg == '-Xmx': arg = '-Xmx'+maxRam+'G'
+                script.append(arg)
+        
+        return ' '.join(script)
+    
     def PineCraftXText(self): 
         columns, _ = os.get_terminal_size()
         
-        if columns <= 94:
-            return '''
-            \x1b[31m██████╗ \x1b[38;5;208m ██████╗\x1b[31m██╗  ██╗
-            \x1b[31m██╔══██╗\x1b[38;5;208m██╔════╝\x1b[31m╚██╗██╔╝
-            \x1b[31m██████╔╝\x1b[38;5;208m██║     \x1b[31m ╚███╔╝ 
-            \x1b[31m██╔═══╝ \x1b[38;5;208m██║     \x1b[31m ██╔██╗ 
-            \x1b[31m██║     \x1b[38;5;208m╚██████╗\x1b[31m██╔╝ ██╗
-            \x1b[31m╚═╝     \x1b[38;5;208m ╚═════╝\x1b[31m╚═╝  ╚═╝\x1b[39m
-            '''
-        else:
+        if columns >= 94:
             return '''
             \x1b[31m██████╗ ██╗███╗   ██╗███████╗\x1b[38;5;208m ██████╗██████╗  █████╗ ███████╗████████╗    \x1b[31m██╗  ██╗
             \x1b[31m██╔══██╗██║████╗  ██║██╔════╝\x1b[38;5;208m██╔════╝██╔══██╗██╔══██╗██╔════╝╚══██╔══╝    \x1b[31m╚██╗██╔╝
@@ -172,6 +181,15 @@ class App:
             \x1b[31m██╔═══╝ ██║██║╚██╗██║██╔══╝  \x1b[38;5;208m██║     ██╔══██╗██╔══██║██╔══╝     ██║       \x1b[31m ██╔██╗ 
             \x1b[31m██║     ██║██║ ╚████║███████╗\x1b[38;5;208m╚██████╗██║  ██║██║  ██║██║        ██║       \x1b[31m██╔╝ ██╗
             \x1b[31m╚═╝     ╚═╝╚═╝  ╚═══╝╚══════╝\x1b[38;5;208m ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝        ╚═╝       \x1b[31m╚═╝  ╚═╝\x1b[39m
+            '''
+        else:
+            return '''
+            \x1b[31m██████╗ \x1b[38;5;208m ██████╗\x1b[31m██╗  ██╗
+            \x1b[31m██╔══██╗\x1b[38;5;208m██╔════╝\x1b[31m╚██╗██╔╝
+            \x1b[31m██████╔╝\x1b[38;5;208m██║     \x1b[31m ╚███╔╝ 
+            \x1b[31m██╔═══╝ \x1b[38;5;208m██║     \x1b[31m ██╔██╗ 
+            \x1b[31m██║     \x1b[38;5;208m╚██████╗\x1b[31m██╔╝ ██╗
+            \x1b[31m╚═╝     \x1b[38;5;208m ╚═════╝\x1b[31m╚═╝  ╚═╝\x1b[39m
             '''
 
 if __name__ == '__main__': App()
