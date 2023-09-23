@@ -1,14 +1,14 @@
 from .progress import ProgressBar
 from json import load, dump
 from os import system, name
-from requests import get
+from os.path import abspath
 from .menu import Menu
 
 def clear(): system('cls' if name == 'nt' else 'clear')
 
 class ConfigFile:
     def __init__(self, file: str):
-        self.filename = file
+        self.filename = abspath(file)
 
     def addServer(self, name: str, jarType: str, version: str) -> None:
         with open(self.filename, 'r') as file:
