@@ -1,6 +1,2 @@
-# Cache(s) from testing
-core\__pycache__
 __pycache__
-
-# Test files
 test.py
