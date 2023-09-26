@@ -7,14 +7,14 @@ An easy to use installer to setup a minecraft server on the Raspberry Pi
 # Differences between [Pinecraft](https://github.com/Cat5TV/pinecraft)
 ## Pros
 * Allows different types of servers
-* Advanced user panel
-* Custom server jar
+* Automatic Download
 * RAM Optimization
+* Management Panel
+* Easy to use GUI
 
 ## Cons
 * Work in progress
 * Small popularity
-* May be buggy
 
 # Server Download
 PineCraft X can automatically download most popular minecraft server jars. Below are the server jars that we can automatically download for you.
