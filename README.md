@@ -27,9 +27,6 @@ PineCraft X can automatically download most popular minecraft server jars. Below
 ## Modded Servers
 * Fabric
 
-# PineCraft X Support
-We have a [Discord server](https://discord.gg/HhtjQU3GZr), but know that this support server is not for support related to minecraft, only for support with PineCraft X.
-
 # Credits
 * Deezed420 (For creating the entire program)
 * Pollev (For the [progress bar](https://github.com/pollev/python_progress_bar) that we use)
