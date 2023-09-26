@@ -90,9 +90,8 @@ class App:
                         ).display()
 
                         if current == 'Start server':
-                            subprocess.run('cd '+server, shell=True)
-                            subprocess.run('run.sh', shell=True)
-                            core.service.clear() ; exit()
+                            os.chdir(os.path.abspath(server))
+                            subprocess.run('./run.sh', shell=True)
                         elif current == 'Delete':
                             current = self.menu['Confirm'].display()
                             if current == 'I am sure':
