@@ -92,6 +92,7 @@ class App:
                         if current == 'Start server':
                             os.chdir(os.path.abspath(server))
                             subprocess.run('./run.sh', shell=True)
+                            exit()
                         elif current == 'Delete':
                             current = self.menu['Confirm'].display()
                             if current == 'I am sure':
