@@ -1,48 +1,50 @@
-import sys, os
+from sys import stdin,platform,stdout
+from os import get_terminal_size
 
 class Menu:
     def __init__(self, title: str, options: list) -> str:
         self.title = title
         self.options = options
-        self.selected_index = 0
+        self._selected_index = 0
     
     def display(self, selector: str = '>', backSignal: bool = True, helpBar: bool = True):
         self.selector = selector
         
-        _,rows = os.get_terminal_size()
+        _,rows = get_terminal_size()
 
         print('\x1b[2J')
-        if backSignal: print(f'\x1b[{rows};0f Left - Back, Up and down - Move up and down, Enter - Select\r')
-        else: print(f'\x1b[{rows};0f Left - Back, Up and down - Move up and down, Enter - Select \r')
+        if helpBar:
+            if backSignal: print(f'\x1b[{rows};0f Left - Back, Up and down - Move up and down, Enter - Select\r')
+            else: print(f'\x1b[{rows};0f Left - Back, Up and down - Move up and down, Enter - Select \r')
 
         while True:
             self.__display_menu()
             key = self.__getkey()
 
-            if key == 'up' and self.selected_index > 0: self.selected_index -= 1
-            if key == 'down' and self.selected_index < len(self.options) - 1: self.selected_index += 1
-            if key == 'select': return self.options[self.selected_index]
+            if key == 'up' and self._selected_index > 0: self._selected_index -= 1
+            if key == 'down' and self._selected_index < len(self.options) - 1: self._selected_index += 1
+            if key == 'select':  print('\x1b[2J') ; return self.options[self._selected_index]
             if backSignal and key == 'left': return 'Back'
 
     def __getch(self):
-        if sys.platform == 'linux':
+        if platform == 'linux':
             import termios, tty
-            fd = sys.stdin.fileno()
+            fd = stdin.fileno()
             old_settings = termios.tcgetattr(fd)
             try:
                 tty.setraw(fd)
-                ch = sys.stdin.read(1)
+                ch = stdin.read(1)
             finally:
                 termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
                 return ch
-        elif sys.platform == 'win32':
+        elif platform == 'win32':
             from msvcrt import getch
             return getch()
 
     def __getkey(self):
         firstChar = self.__getch()
         try:
-            if sys.platform == 'linux':
+            if platform == 'linux':
                 if firstChar == '\x1b':
                     return {'[A': 'up', '[B': 'down', '[C': 'right', '[D': 'left'}[self.__getch() + self.__getch()]
                 elif firstChar == chr(3):
@@ -63,13 +65,13 @@ class Menu:
         except KeyError: pass
             
     def __display_menu(self):
-        sys.stdout.write('\033[H')
-        sys.stdout.flush()
+        stdout.write('\033[H')
+        stdout.flush()
 
         print(self.title)
 
         for idx, option in enumerate(self.options):
-            if idx == self.selected_index:
+            if idx == self._selected_index:
                 print(f"{self.selector} {option}")
             else:
                 print(f"  {option}")
