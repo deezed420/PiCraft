@@ -1,4 +1,4 @@
-## I'm back! PCX should get weekly updates now
+### I'm back! PCX should get weekly updates now
 
 # PineCraft X
 An easy to use installer to setup a minecraft server on the Raspberry Pi
