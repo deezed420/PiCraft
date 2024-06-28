@@ -86,6 +86,13 @@ class ProgressBar:
         print(f'\x1b[{self.lines - 1};0f{self.title} {percentage}% {progress_bar}\x1b[K', end='')
 
 if __name__ == '__main__':
-    pb = ProgressBar()
-    
-    pb.__print_progress_bar(1)
+    bar = ProgressBar()
+    for i in range(1,100):
+        bar.draw(i)
+        time.sleep(.5)
+        if bar.percentage == 50:
+            bar.halt()
+            time.sleep(1)
+            bar.title = 'Cheese'
+            bar.print('I like cheese')
+            bar.draw(i)

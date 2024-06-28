@@ -3,9 +3,9 @@ from os import get_terminal_size
 
 class Menu:
     def __init__(self, title: str, options: list) -> str:
-        self.title = title
-        self.options = options
         self._selected_index = 0
+        self.options = options
+        self.title = title
     
     def display(self, selector: str = '>', backSignal: bool = True, helpBar: bool = True):
         self.selector = selector
@@ -76,4 +76,4 @@ class Menu:
             else:
                 print(f"  {option}")
 
-if __name__ == '__main__': menu = print(Menu('Main Menu', ['Option 1', 'Option 2', 'Option 3']).display())
+if __name__ == '__main__': Menu('Cheese', ['I like it', 'I love it', 'I hate it (war crime)']).display()

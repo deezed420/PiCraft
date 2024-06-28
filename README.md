@@ -9,17 +9,17 @@ An easy to use installer to setup a minecraft server on the Raspberry Pi
 # Differences between [Pinecraft](https://github.com/Cat5TV/pinecraft)
 ## Pros
 * Allows different types of servers
-* Automatic Download
-* RAM Optimization
 * Management Panel
-* Easy to use GUI
+* Easy to use CLI
 
 ## Cons
 * Work in progress
 * Small popularity
 
 # Server Download
-PineCraft X can automatically download most popular minecraft server jars. Below are the server jars that we can automatically download for you.
+PineCraft X can automatically download most popular minecraft server jars. Below are the server jars that we can automatically download for you. Note: If you want vanilla
+functionality so that farms work, choose Fabric as Spigot, Paper, and Purpur have
+patches for most of these farms.
 
 ## Bukkit Forks
 * Spigot
